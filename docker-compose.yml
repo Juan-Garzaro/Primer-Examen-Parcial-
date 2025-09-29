@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  mongodb:
+    image: mongo:6.0               # Imagen oficial de MongoDB
+    container_name: mongodb_exam   # Nombre del contenedor
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"              # Puerto para conexiones externas
+    volumes:
+      - mongo_data:/data/db        # Persistencia de datos
+
+  mongo-express:
+    image: mongo-express:1.0      # Interfaz web ligera
+    container_name: mongo_express_exam
+    restart: unless-stopped
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_BASICAUTH_USERNAME: admin   # Usuario para login web
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+    ports:
+      - "8081:8081"                # Acceso web desde localhost:8081
+    depends_on:
+      - mongodb
+
+volumes:
+  mongo_data:
